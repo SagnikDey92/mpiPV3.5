@@ -382,8 +382,6 @@ AC_ARG_ENABLE(concise-report-default,
 	,
 )
 
-AC_DEFINE([PACKAGE],[mpiPpkg],[Defining package name])
-
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 if test "x$AR" = "x"; then
