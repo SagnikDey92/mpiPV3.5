@@ -29,32 +29,8 @@ static char *svnid =
 static int
 _MPI_Init (int *argc, char ***argv)
 {
-  int rc = 0;
-  int enabledStatus;
-
-  enabledStatus = mpiPi.enabled;
-  mpiPi.enabled = 0;
-
-  rc = PMPI_Init (argc, argv);
-
-  mpiPi.enabled = enabledStatus;
-
-#if defined(Linux) && ! defined(ppc64)
-  mpiPi.appFullName = getProcExeLink ();
-  mpiPi_msg_debug ("appFullName is %s\n", mpiPi.appFullName);
-  mpiPi_init (GetBaseAppName (mpiPi.appFullName), MPIPI_MODE_ST);
-#else
-  if (argv != NULL && *argv != NULL && **argv != NULL)
-    {
-      mpiPi_init (GetBaseAppName (**argv), MPIPI_MODE_ST);
-      mpiPi.appFullName = strdup (**argv);
-    }
-  else
-    {
-      mpiPi_init ("Unknown", MPIPI_MODE_ST);
-      mpiPi_msg_debug ("argv is NULL\n");
-    }
-#endif
+  int rc = 0, provided;  
+  rc = _MPI_Init_thread (argc, argv, MPI_THREAD_MULTIPLE, &provided);
 
   return rc;
 }
@@ -122,6 +98,10 @@ _MPI_Init_thread (int *argc, char ***argv, int required, int *provided)
   }
 
   mpiPi.enabled = enabledStatus;
+
+  MPI_Comm dupcomm;
+  PMPI_Comm_dup(MPI_COMM_WORLD, &dupcomm);
+  mpiPi.comm = dupcomm;
 
 #if defined(Linux) && ! defined(ppc64)
   mpiPi.appFullName = getProcExeLink ();
