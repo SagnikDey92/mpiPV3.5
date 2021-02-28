@@ -1,4 +1,3 @@
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -10,6 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
+#include <time.h>
 
 FILE *dbg;
 int sockfd, visItsockfd[1024], address_len;
@@ -20,7 +20,7 @@ char *buffer;
 ssize_t readlen;
 //static const int signum=SIGRTMIN+1; 
 struct sigevent sigevent;   
-int iter;
+int iter = 0;
 
 void handler(int signum)
 {
@@ -48,14 +48,14 @@ int main(int argc, char **argv)
 
 	if(argc < 3)
 	{
-		printf("Missing argument \nUsage: ./server <number of clients> <report frequency>");
+		printf("Missing argument \nUsage: ./server <total report time (in seconds)> <report frequency>");
 		exit(1);
 	}
 
-	int numps = atoi(argv[1]);
+	int t_time = atoi(argv[1]);
 	int wait = atoi(argv[2]);
 
-	numps = 1;
+	int numps = 1;
 
 	// Create an endpoint for communication
 
@@ -97,20 +97,16 @@ int main(int argc, char **argv)
 
 	visIt_address_len = sizeof(visIt_address);
 	buffer = (char *)malloc(512*sizeof(char));
-	
+		
+	printf("waiting %d\n", iter);
 
-	for (iter=0;iter<numps;iter++) {
-	
-		printf("waiting %d\n", iter);
-
-		if ((visItsockfd[iter] = accept(sockfd, (struct sockaddr *) &visIt_address, &visIt_address_len)) == -1) {
-			perror("server: accept error ");
-			exit(1);
-		}
-
-		printf("client connected %d\n", visItsockfd[iter]);
-
+	if ((visItsockfd[iter] = accept(sockfd, (struct sockaddr *) &visIt_address, &visIt_address_len)) == -1) {
+		perror("server: accept error ");
+		exit(1);
 	}
+
+	printf("client connected %d\n", visItsockfd[iter]);
+
 
 /*		if((readlen=(recv(visItsockfd[iter], buffer, 512, 0)))> 0) 
 			printf("%s\n", buffer);
@@ -119,39 +115,47 @@ int main(int argc, char **argv)
 */
 		//sleep(180);
 
-	const char *string[] = {"Hello1", "Hello2", "Hello3", "Hello4", "Hello5", "Hello6", "Hello7", "Hello8", "Hello9", "Hello10", "I will", "send", "now", "Byebye"};
+	const char *string[] = {"Hello", "Byebye"};
 	int i=-1, numbytes;
 
+	time_t startTime = time(NULL);
 	while(1) {
 	 
-	  i++;
-
-	  for (iter=0;iter<numps;iter++) {
-
+	  if (time(NULL) - startTime < t_time) {
 		//sleep(5);
-		printf("\nSending %s to %d\n", string[i], visItsockfd[iter]);
-		strcpy(buffer, string[i]);
+		printf("\nSending %s to %d\n", string[0], visItsockfd[iter]);
+		strcpy(buffer, string[0]);
 		int len = strlen(buffer);
 		buffer[len]='%';	//\n';
 		//if((numbytes = write(visItsockfd[iter], buffer, len+1)) <= 0)
-		if((numbytes = send(visItsockfd[iter], buffer, len+1, 0)) <= 0)
+		if((numbytes = send(visItsockfd[0], buffer, len+1, 0)) <= 0)
 			perror("Server send error");
 		
 		printf("\nSent %d %d bytes\n", len, numbytes);
-
+	  }
+	  else {
+		printf("\nSending %s to %d\n", string[1], visItsockfd[iter]);
+		strcpy(buffer, string[1]);
+		int len = strlen(buffer);
+		buffer[len]='%';	//\n';
+		//if((numbytes = write(visItsockfd[iter], buffer, len+1)) <= 0)
+		if((numbytes = send(visItsockfd[0], buffer, len+1, 0)) <= 0)
+			perror("Server send error");
+		
+		printf("\nSent %d %d bytes\n", len, numbytes);
+		break;
 	  }
 
-	  sleep(wait);
 
-	  if(strncmp(buffer, "Byebye", 6) == 0) 
-		  break;
+
+	  sleep(wait);
 	}
 
 	// Close connection
 	close(sockfd);
-	for (iter=0;iter<numps;iter++) 
-		close(visItsockfd[iter]);
+	close(visItsockfd[iter]);
 
 	return 0;
 
 }
+

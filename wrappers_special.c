@@ -27,6 +27,9 @@ static char *svnid =
 /* ----- INIT -------------------------------------------------- */
 
 static int
+_MPI_Init_thread (int *argc, char ***argv, int required, int *provided);
+  
+static int
 _MPI_Init (int *argc, char ***argv)
 {
   int rc = 0, provided;  
