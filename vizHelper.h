@@ -26,13 +26,16 @@ void sim_msg_handler(int sockfd)
 		buffer[0] = '\0';
 		//printf("\nDEBUG: %d rank %d tag %d local collector %d\n", i, mpiPi.rank, mpiPi.tag, mpiPi.collectorRank);
     		//mpiPi_generateReport (mpiPi.report_style);
-		MPI_Pcontrol(2);
+		//MPI_Pcontrol(2);
                 int number = 123;
                 if (mpiPi.rank == mpiPi.collectorRank) {
                   if((numbytes = recv(sockfd, buffer, msgsize, 0)) == -1) 
           	    perror("\nRecv failed\n");  
+                  if (numbytes == 0) {
+                    printf("\nServer stopped prematurely\n");      
+                  }
                   printf("\nDEBUG: %d Received [%s]\n", mpiPi.rank, buffer);
-		  if(strncmp(buffer, "Byebye", 6) == 0) {
+		  if((strncmp(buffer, "Byebye", 6) == 0) || numbytes == 0) {
 		    number = 234;	  
 		    MPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
 		    break;
