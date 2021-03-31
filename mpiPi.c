@@ -133,8 +133,7 @@ mpiPi_init (char *appName, mpiPi_thr_mode_t thr_mode)
   /*vizProf*/
   if (pthread_mutex_init(&reset_lock, NULL) != 0) 
     {
-      printf("\n mutex init has failed\n");
-      return 1;
+      perror("\n mutex init has failed\n");
     }
 
   if (DEFAULT_REPORT_FORMAT == mpiPi_style_concise)

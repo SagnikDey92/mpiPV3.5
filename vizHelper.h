@@ -22,13 +22,13 @@ void sim_msg_handler(int sockfd)
                   printf("\nDEBUG: %d Received [%s]\n", mpiPi.rank, buffer);
 		  if((strncmp(buffer, "Byebye", 6) == 0) || numbytes == 0) {
 		    number = 234;	  
-		    MPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
+		    PMPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
 		    break;
 		  }
-		  MPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
+		  PMPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
                 }
 	        else {
-		  MPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
+		  PMPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
 		  if(number == 234)
 		    break;
 		}	  
@@ -40,6 +40,7 @@ void sim_msg_handler(int sockfd)
 
 void * initConn(void *arg) {
 
+	//return;
 	int i=0, flags;
         char *buffer = (char *)malloc(msgsize*sizeof(char));
 	struct sigaction saio; 
