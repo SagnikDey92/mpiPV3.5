@@ -1,20 +1,3 @@
-void tokenize(char *input, const char *marker, char *returnstr) {
-
-//	if (input == NULL) return "Byebye";
-//        char *returnstr = (char *) malloc(msgsize*sizeof(char));
-//	const char marker[2] = "\n";
-//	printf("Enter tokenize\n");
-//	printf("input: %s marker: %s\n", input, marker);
-        char *token = strtok (input, marker);
-        while (token != NULL) {
-//            printf ("token: %s\n", token);
-            strcpy(returnstr, token);
-            token = strtok (NULL, marker);
-        }
-//        return returnstr;
-}
-
-
 void sim_msg_handler(int sockfd)
 {
       	int i=0, numbytes;
@@ -26,7 +9,9 @@ void sim_msg_handler(int sockfd)
 		buffer[0] = '\0';
 		//printf("\nDEBUG: %d rank %d tag %d local collector %d\n", i, mpiPi.rank, mpiPi.tag, mpiPi.collectorRank);
     		//mpiPi_generateReport (mpiPi.report_style);
-		//MPI_Pcontrol(2);
+		pthread_mutex_lock(&reset_lock);
+                MPI_Pcontrol(2);
+                pthread_mutex_unlock(&reset_lock);
                 int number = 123;
                 if (mpiPi.rank == mpiPi.collectorRank) {
                   if((numbytes = recv(sockfd, buffer, msgsize, 0)) == -1) 

@@ -130,6 +130,13 @@ mpiPi_init (char *appName, mpiPi_thr_mode_t thr_mode)
   mpiPi.do_lookup = 1;
   mpiPi.messageCountThreshold = -1;
 
+  /*vizProf*/
+  if (pthread_mutex_init(&reset_lock, NULL) != 0) 
+    {
+      printf("\n mutex init has failed\n");
+      return 1;
+    }
+
   if (DEFAULT_REPORT_FORMAT == mpiPi_style_concise)
     {
       mpiPi.report_style = mpiPi_style_concise;
