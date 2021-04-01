@@ -118,6 +118,12 @@ int main(int argc, char **argv)
 	const char *string[] = {"Hello", "Byebye"};
 	int i=-1, numbytes;
 
+	int wait_msg_length = snprintf( NULL, 0, "%d", wait );
+	snprintf( buffer, wait_msg_length + 1, "%d", wait );
+	int len = strlen(buffer);
+	if((numbytes = send(visItsockfd[0], buffer, len+1, 0)) <= 0)
+           perror("Server send error");
+
 	time_t startTime = time(NULL);
 	while(1) {
 	 
@@ -125,7 +131,7 @@ int main(int argc, char **argv)
 		//sleep(5);
 		printf("\nSending %s to %d\n", string[0], visItsockfd[iter]);
 		strcpy(buffer, string[0]);
-		int len = strlen(buffer);
+		len = strlen(buffer);
 		buffer[len]='%';	//\n';
 		//if((numbytes = write(visItsockfd[iter], buffer, len+1)) <= 0)
 		if((numbytes = send(visItsockfd[0], buffer, len+1, 0)) <= 0)

@@ -1,10 +1,18 @@
+#include<stdio.h>
+#include<stdlib.h>
+
 void sim_msg_handler(int sockfd)
 {
-      	int i=0, numbytes;
+      	int i=0, numbytes, freq;
         char *buffer = (char *)malloc(msgsize*sizeof(char));
         char *last = (char *)malloc(msgsize*sizeof(char));
 	const char marker[2] = "%";
-
+	if (mpiPi.rank == mpiPi.collectorRank) {
+		if((numbytes = recv(sockfd, buffer, msgsize, 0)) == -1)
+                    perror("\nRecv failed\n");
+		freq = atoi(buffer);
+	}
+	PMPI_Bcast(&freq, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
 	while (1) {
 		buffer[0] = '\0';
 		//printf("\nDEBUG: %d rank %d tag %d local collector %d\n", i, mpiPi.rank, mpiPi.tag, mpiPi.collectorRank);
@@ -33,7 +41,8 @@ void sim_msg_handler(int sockfd)
 		    break;
 		}	  
                 //MPI_Barrier(mpiPi.comm);
-                mpiPi_generateReport (mpiPi.report_style); 
+                mpiPi_generateReport (mpiPi.report_style);
+		sleep(freq);
 	}
 //	close(sockfd);
 }
