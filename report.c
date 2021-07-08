@@ -667,7 +667,7 @@ mpiPi_print_top_time_sites (FILE * fp)
                "App%", "MPI%", "Count");
     }
 
-  for (i = 0; (i < 20) && (i < ac); i++)
+  for (i = 0; (i < 50) && (i < ac); i++)
     {
       if (av[i]->cumulativeTime > 0)
         {
@@ -732,7 +732,7 @@ mpiPi_print_top_sent_sites (FILE * fp)
       fprintf (fp, "%-20s %4s %10s %10s %10s %6s\n", "Call", "Site",
                "Count", "Total", "Avrg", "Sent%");
 
-      for (i = 0; (i < 20) && (i < ac); i++)
+      for (i = 0; (i < 50) && (i < ac); i++)
         {
           if (av[i]->cumulativeDataSent > 0)
             {
@@ -808,7 +808,7 @@ mpiPi_print_top_collective_sent_sites (FILE * fp)
           result_ptrs[0]);
 
       j = 0;
-      for (i = 0; (i < 20) && (i < result_count); i++)
+      for (i = 0; (i < 50) && (i < result_count); i++)
         {
           /* Find location in matrix */
           for (x = 0; x < MPIP_NFUNC; x++)
@@ -892,7 +892,7 @@ mpiPi_print_top_pt2pt_sent_sites (FILE * fp)
           result_ptrs[0]);
 
       j = 0;
-      for (i = 0; (i < 20) && (i < result_count); i++)
+      for (i = 0; (i < 50) && (i < result_count); i++)
         {
           /* Find location in matrix */
           for (x = 0; x < MPIP_NFUNC; x++)
@@ -954,7 +954,7 @@ mpiPi_print_top_io_sites (FILE * fp)
       fprintf (fp, "%-20s %4s %10s %10s %10s %6s\n", "Call", "Site",
                "Count", "Total", "Avrg", "I/O%");
 
-      for (i = 0; (i < 20) && (i < ac); i++)
+      for (i = 0; (i < 50) && (i < ac); i++)
         {
           if (av[i]->cumulativeIO > 0)
             {
@@ -999,7 +999,7 @@ mpiPi_print_top_rma_sites (FILE * fp)
       fprintf (fp, "%-20s %4s %10s %10s %10s %6s\n", "Call", "Site",
                "Count", "Total", "Avrg", "I/O%");
 
-      for (i = 0; (i < 20) && (i < ac); i++)
+      for (i = 0; (i < 50) && (i < ac); i++)
         {
           if (av[i]->cumulativeRMA > 0)
             {

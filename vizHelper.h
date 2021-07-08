@@ -1,32 +1,21 @@
-void tokenize(char *input, const char *marker, char *returnstr) {
-
-//	if (input == NULL) return "Byebye";
-//        char *returnstr = (char *) malloc(msgsize*sizeof(char));
-//	const char marker[2] = "\n";
-//	printf("Enter tokenize\n");
-//	printf("input: %s marker: %s\n", input, marker);
-        char *token = strtok (input, marker);
-        while (token != NULL) {
-//            printf ("token: %s\n", token);
-            strcpy(returnstr, token);
-            token = strtok (NULL, marker);
-        }
-//        return returnstr;
-}
-
-
 void sim_msg_handler(int sockfd)
 {
-      	int i=0, numbytes;
+      	int i=0, numbytes, freq;
         char *buffer = (char *)malloc(msgsize*sizeof(char));
         char *last = (char *)malloc(msgsize*sizeof(char));
 	const char marker[2] = "%";
-
+        if (mpiPi.rank == mpiPi.collectorRank) {
+		if((numbytes = recv(sockfd, buffer, msgsize, 0)) == -1)
+                    perror("\nRecv failed\n");
+		freq = atoi(buffer);
+	}
+	PMPI_Bcast(&freq, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm); 
+       	
 	while (1) {
 		buffer[0] = '\0';
 		//printf("\nDEBUG: %d rank %d tag %d local collector %d\n", i, mpiPi.rank, mpiPi.tag, mpiPi.collectorRank);
     		//mpiPi_generateReport (mpiPi.report_style);
-		//MPI_Pcontrol(2);
+		MPI_Pcontrol(2);
                 int number = 123;
                 if (mpiPi.rank == mpiPi.collectorRank) {
                   if((numbytes = recv(sockfd, buffer, msgsize, 0)) == -1) 
@@ -37,18 +26,20 @@ void sim_msg_handler(int sockfd)
                   printf("\nDEBUG: %d Received [%s]\n", mpiPi.rank, buffer);
 		  if((strncmp(buffer, "Byebye", 6) == 0) || numbytes == 0) {
 		    number = 234;	  
-		    MPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
+		    PMPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
 		    break;
 		  }
-		  MPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
+		  PMPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
                 }
 	        else {
-		  MPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
+		  PMPI_Bcast(&number, 1, MPI_INT, mpiPi.collectorRank, mpiPi.comm);
 		  if(number == 234)
 		    break;
 		}	  
                 //MPI_Barrier(mpiPi.comm);
-                mpiPi_generateReport (mpiPi.report_style); 
+                //mpiPi_generateReport (mpiPi.report_style);
+		MPI_Pcontrol(3);
+	        sleep(freq);	
 	}
 //	close(sockfd);
 }
