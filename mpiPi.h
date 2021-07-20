@@ -137,6 +137,7 @@ typedef struct _mpiPi_t
 #endif
   int hostnamelen;
   char *outputDir;
+  char *serverIP;
   char *envStr;
   FILE *stdout_;
   FILE *stderr_;

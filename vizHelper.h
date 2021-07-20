@@ -57,7 +57,7 @@ void * initConn(void *arg) {
 //	printf("\ninitConn called %d\n", *rank);
         if (mpiPi.rank == mpiPi.collectorRank)
         {
-	if ((hostname = gethostbyname(serverIP)) == 0) {
+	if ((hostname = gethostbyname(mpiPi.serverIP)) == 0) {
                 perror("client: gethostbyname error ");
                 exit(1);
         }

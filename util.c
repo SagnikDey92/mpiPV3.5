@@ -56,6 +56,7 @@ mpiPi_getenv ()
   char *ep = NULL;
 
   mpiPi.outputDir = ".";
+  mpiPi.serverIP = "172.27.19.10";
 
   ep = getenv ("MPIP");
   mpiPi.envStr = (ep ? strdup (ep) : 0);
@@ -264,6 +265,9 @@ mpiPi_getenv ()
               break;
 
             case 'a':
+              /*  Specify report generator IP*/
+              mpiPi.serverIP = optarg;
+              break;
             case 'b':
             case 'h':
             case 'i':
