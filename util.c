@@ -81,7 +81,7 @@ mpiPi_getenv ()
 
       av[ac] = NULL;
 
-      for (; ((c = getopt (ac, av, "cdef:gk:lm:noprs:t:vx:yz")) != EOF);)
+      for (; ((c = getopt (ac, av, "a:cdef:gk:lm:noprs:t:vx:yz")) != EOF);)
         {
           switch (c)
             {
@@ -267,6 +267,8 @@ mpiPi_getenv ()
             case 'a':
               /*  Specify report generator IP*/
               mpiPi.serverIP = optarg;
+              mpiPi_msg ("Set the serverIP to [%s].\n",
+                           mpiPi.serverIP);
               break;
             case 'b':
             case 'h':
