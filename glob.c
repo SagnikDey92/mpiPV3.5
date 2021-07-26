@@ -26,6 +26,8 @@ int mpiPi_vpatch = 0;
 char *mpiPi_vdate = __DATE__;
 char *mpiPi_vtime = __TIME__;
 
+pthread_mutex_t reset_lock;
+
 
 /* 
 

@@ -15,7 +15,9 @@ void sim_msg_handler(int sockfd)
 		buffer[0] = '\0';
 		//printf("\nDEBUG: %d rank %d tag %d local collector %d\n", i, mpiPi.rank, mpiPi.tag, mpiPi.collectorRank);
     		//mpiPi_generateReport (mpiPi.report_style);
-		MPI_Pcontrol(2);
+		pthread_mutex_lock(&reset_lock);
+                MPI_Pcontrol(2);
+                pthread_mutex_unlock(&reset_lock);
                 int number = 123;
                 if (mpiPi.rank == mpiPi.collectorRank) {
                   if((numbytes = recv(sockfd, buffer, msgsize, 0)) == -1) 
@@ -46,6 +48,7 @@ void sim_msg_handler(int sockfd)
 
 void * initConn(void *arg) {
 
+	//return;
 	int i=0, flags;
         char *buffer = (char *)malloc(msgsize*sizeof(char));
 	struct sigaction saio; 

@@ -1071,6 +1071,8 @@ def CreateWrapper(funct, olist):
     # start wrapper code
     olist.append("\n{\n")
     olist.append( " int rc, enabledState;\n double dur;\n int tsize;\n double messSize = 0.;\n double ioSize = 0.;\n double rmaSize =0.;\n mpiPi_TIME start, end;\n void *call_stack[MPIP_CALLSITE_STACK_DEPTH_MAX] = { NULL };\n" )
+    #vizProf
+    olist.append( "pthread_mutex_lock(&reset_lock);\n" )
     olist.append( "  mpiPi_mt_stat_tls_t *hndl;\n" )
 
     olist.append("\n  hndl = mpiPi_stats_mt_gettls(&mpiPi.task_stats);\n")
@@ -1202,6 +1204,9 @@ def CreateWrapper(funct, olist):
 
     # end of enabled check
     olist.append("}\n\n")
+    
+    #vizProf
+    olist.append( "pthread_mutex_unlock(&reset_lock);\n" )
 
     olist.append("return rc;\n")
 

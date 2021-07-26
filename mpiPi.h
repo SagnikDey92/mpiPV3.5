@@ -26,6 +26,9 @@
 #include <time.h>
 #include <unistd.h>
 
+/*vizProf*/
+#include <pthread.h>
+
 #include "mpiPconfig.h"
 
 #ifdef ENABLE_BFD
@@ -212,6 +215,9 @@ extern char *mpiPi_vtime;
 
 extern int mpiPi_debug;
 extern int mpiPi_do_demangle;
+
+/*vizProf*/
+extern pthread_mutex_t reset_lock;
 
 #ifdef HAVE_MPIR_TOPOINTER
 extern void *MPIR_ToPointer (int idx);
