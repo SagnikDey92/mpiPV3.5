@@ -269,14 +269,14 @@ main ()
   SampleRecord_t sr[20];
   int i;
   srand (0);
-  for (i = 0; i < 50; i++)
+  for (i = 0; i < 200; i++)
     {
       sr[i].id = rand ();
       sr[i].size = i;
       sr[i].order = i * 10;
     }
   ht = h_open (4, computeKey, compareRecs);
-  for (i = 0; i < 50; i++)	/* insert some elements */
+  for (i = 0; i < 200; i++)	/* insert some elements */
     {
       if (NULL != h_insert (ht, &sr[i]))
         {
@@ -317,7 +317,7 @@ main ()
   }
 
   printf ("-----\n");
-  for (i = 25; i < 50; i++)	/* delete half elements */
+  for (i = 100; i < 200; i++)	/* delete half elements */
     {
       SampleRecord_t *d;
       if (NULL != h_delete (ht, &sr[i], (void **) &d))
